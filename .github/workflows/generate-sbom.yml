@@ -18,7 +18,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [ -f "./7021SCN_Coursework_Portfolio/Task_E_Compliance_Supply_Chain/Dockerfile" ]; then
+          if [ -f "./Dockerfile" ]; then
+            echo "context=." >> "$GITHUB_OUTPUT"
+          elif [ -f "./7021SCN_Coursework_Portfolio/Task_E_Compliance_Supply_Chain/Dockerfile" ]; then
             echo "context=./7021SCN_Coursework_Portfolio/Task_E_Compliance_Supply_Chain" >> "$GITHUB_OUTPUT"
           elif [ -f "./Task_E_Compliance_Supply_Chain/Dockerfile" ]; then
             echo "context=./Task_E_Compliance_Supply_Chain" >> "$GITHUB_OUTPUT"

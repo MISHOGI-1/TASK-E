@@ -13,8 +13,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Resolve Task E build context
+        id: resolve_context
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f "./7021SCN_Coursework_Portfolio/Task_E_Compliance_Supply_Chain/Dockerfile" ]; then
+            echo "context=./7021SCN_Coursework_Portfolio/Task_E_Compliance_Supply_Chain" >> "$GITHUB_OUTPUT"
+          elif [ -f "./Task_E_Compliance_Supply_Chain/Dockerfile" ]; then
+            echo "context=./Task_E_Compliance_Supply_Chain" >> "$GITHUB_OUTPUT"
+          else
+            echo "Could not find Task E Dockerfile. Repository tree:"
+            pwd
+            ls -la
+            echo "--- Recursive listing (top 3 levels) ---"
+            find . -maxdepth 3 -type f | sort
+            exit 1
+          fi
+
       - name: Build local container image
-        run: docker build -t temp-target:latest ./7021SCN_Coursework_Portfolio/Task_E_Compliance_Supply_Chain
+        run: docker build -t temp-target:latest "${{ steps.resolve_context.outputs.context }}"
 
       - name: Run Anchore Syft
         uses: anchore/sbom-action@v0
